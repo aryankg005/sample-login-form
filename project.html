@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Portal</title>
+    
+    <!-- Google Font for "Welcome Back" -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Gotham', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #0891b2 50%, #87ceeb 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                       radial-gradient(circle at 80% 20%, rgba(14, 116, 144, 0.2) 0%, transparent 50%),
+                       radial-gradient(circle at 40% 40%, rgba(135, 206, 235, 0.15) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: rotate(0deg) translate(0px, 0px); }
+            33% { transform: rotate(120deg) translate(20px, -20px); }
+            66% { transform: rotate(240deg) translate(-20px, 20px); }
+        }
+
+        .login-container {
+            background: rgba(245, 245, 220, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 3rem 2.5rem;
+            border-radius: 24px;
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            transform: translateY(0);
+            animation: slideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .login-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #1e3a8a, #0891b2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-subtitle {
+            font-family: 'Gotham', 'Inter', sans-serif;
+            color: #0891b2;
+            font-size: 1rem;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1e3a8a;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            font-family: 'Gotham', 'Inter', sans-serif;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid rgba(30, 58, 138, 0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: #1e3a8a;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+            position: relative;
+            font-family: 'Gotham', 'Inter', sans-serif;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: #0891b2;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 
+                0 0 0 3px rgba(8, 145, 178, 0.1),
+                0 8px 25px -8px rgba(8, 145, 178, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Error state */
+        .form-input.error {
+            border-color: red !important;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.8rem;
+            margin-top: 0.4rem;
+            font-weight: 600;
+            display: none;
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 1rem;
+        }
+
+        .forgot-password a {
+            color: #0891b2;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: 'Gotham', 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .forgot-password a:hover {
+            color: #1e3a8a;
+        }
+
+        .forgot-password a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 50%;
+            background: #0891b2;
+            transition: all 0.3s ease;
+        }
+
+        .forgot-password a:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            font-family: 'Gotham', 'Inter', sans-serif;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -10px rgba(8, 145, 178, 0.4);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .login-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .login-button:hover::before {
+            left: 100%;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .signup-link a {
+            color: #0891b2;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: 'Gotham', 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .signup-link a:hover {
+            color: #1e3a8a;
+        }
+
+        .signup-link a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 50%;
+            background: #0891b2;
+            transition: all 0.3s ease;
+        }
+
+        .signup-link a:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 1rem;
+                padding: 2rem 1.5rem;
+            }
+            
+            .login-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Success animation for form submission */
+        .success-animation {
+            animation: success 0.6s ease;
+        }
+
+        @keyframes success {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1 class="login-title">Welcome Back</h1>
+            <p class="login-subtitle">Please sign in to your account</p>
+        </div>
+        
+        <form id="loginForm" class="login-form">
+            <div class="form-group" id="userIdGroup">
+                <label for="userId" class="form-label">User ID</label>
+                <input type="text" id="userId" name="userId" class="form-input" required>
+                <div class="error-message">User ID must contain only numbers.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" name="username" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="userType" class="form-label">User Type</label>
+                <select id="userType" name="userType" class="form-select" required>
+                    <option value="">Select user type</option>
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" name="password" class="form-input" required>
+            </div>
+
+            <div class="forgot-password">
+                <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+            </div>
+            
+            <button type="submit" class="login-button">Sign In</button>
+            
+            <div class="signup-link">
+                <a href="signup.html">Don't have account? Sign up</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const inputs = document.querySelectorAll('.form-input, .form-select');
+            const loginButton = document.querySelector('.login-button');
+            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+            const userIdInput = document.getElementById('userId');
+            const userIdGroup = document.getElementById('userIdGroup');
+
+            // ✅ User ID validation
+            userIdInput.addEventListener('input', function() {
+                if (/^\d*$/.test(this.value)) {
+                    this.classList.remove('error');
+                    userIdGroup.classList.remove('error');
+                } else {
+                    this.classList.add('error');
+                    userIdGroup.classList.add('error');
+                }
+            });
+            
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'translateY(-2px)';
+                });
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'translateY(0)';
+                });
+                input.addEventListener('input', function() {
+                    this.style.borderColor = this.value.length > 0 ? '#0891b2' : 'rgba(30, 58, 138, 0.2)';
+                });
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (userIdGroup.classList.contains('error')) {
+                    alert("Please fix the User ID field before submitting.");
+                    return;
+                }
+
+                const container = document.querySelector('.login-container');
+                container.classList.add('success-animation');
+                const originalText = loginButton.textContent;
+                loginButton.textContent = 'Signing In...';
+                loginButton.style.background = 'linear-gradient(135deg, #059669 0%, #0891b2 100%)';
+                
+                setTimeout(() => {
+                    loginButton.textContent = '✓ Success!';
+                    setTimeout(() => {
+                        loginButton.textContent = originalText;
+                        loginButton.style.background = 'linear-gradient(135deg, #1e3a8a 0%, #0891b2 100%)';
+                        container.classList.remove('success-animation');
+                        console.log('Login attempted with:', {
+                            userId: document.getElementById('userId').value,
+                            username: document.getElementById('username').value,
+                            userType: document.getElementById('userType').value,
+                            password: document.getElementById('password').value
+                        });
+                    }, 1500);
+                }, 2000);
+            });
+
+            forgotPasswordLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Forgot password functionality will be implemented later!');
+            });
+
+            document.addEventListener('mousemove', function(e) {
+                const container = document.querySelector('.login-container');
+                const x = (e.clientX / window.innerWidth) * 100;
+                const y = (e.clientY / window.innerHeight) * 100;
+                container.style.transform = `translateX(${(x - 50) * 0.02}px) translateY(${(y - 50) * 0.02}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
